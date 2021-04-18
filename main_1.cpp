@@ -5,7 +5,7 @@
 #include<string>
 #include<fstream>
 
-#define N_s 10
+#define N_s 200
 #define t_max 100
 #define l_0 1.4e-6
 #define Kb 1.38e-23
@@ -30,76 +30,133 @@ double Fluctuation_theorem(double force){
   return exp(force*x_0/(Kb*T));
 }
 
-double Variance(double s_length[N_s]){
-  double sum = 0;
-  for(int i=0; i<N_s; i++){
-    sum += s_length[N_s];
-  }
-
-  double ave = sum/N_s;
-  double result = 0;
-  for(int i=0; i<N; i++){
-    result += (s_length[i] - ave)*(s_length[i] - ave);
-  }
-  return result;
- 
-} 
 
 int main(void){
 
 	srand((unsigned)time(NULL));
 
-	double sarcomere[N_s];
+	double sarcomere[t_max][N_s];
   double x[N_s];
 	double F_my[N_s];
 	double F_all[N_s];
   double PP;
-  double var;
+  double var[t_max];
+  double sum;
+  double ave;
+  double result;
+  double num_sum[N_s];
+  double num_result[N_s];
+  double num_ave[N_s];
+  double num_var[N_s];
 
 	FILE* fp0;
-	fp0 = fopen("N10_tmax100.dat","w");
+	fp0 = fopen("N200_x001e6_tmax100.dat","w");
 	if(fp0==NULL){
 		printf("File open faild.");
 	}
 
-	x[0] = 0;
-  for(int ini=1; ini<N_s - 1; ini++){
-    x[ini] += l_0 + randGauss(Uniform(), Uniform(), x_0);
-  }
+	FILE* fp1;
+	fp1 = fopen("ver_N200_x001e6_tmax100.dat","w");
+	if(fp1==NULL){
+		printf("File open faild.");
+	}
 
   for(int ini=0; ini<N_s; ini++){
-    sarcomere[ini] = x[ini + 1] - x[ini];
-    F_my[ini] = Force_myosin(sarcomere[ini]);
+	  x[ini] = ini*l_0;
+
+    if(ini != 0 and ini != N_s -1){
+      x[ini] += randGauss(Uniform(), Uniform(), x_0);
+    }
+  }
+
+/*
+  for(int ini=0; ini<N_s - 1; ini++){
+
+    sarcomere[0][ini] = x[ini + 1] - x[ini];
+    F_my[ini] = Force_myosin(sarcomere[0][ini]);
+    printf("%15e\n",sarcomere[0][ini]);
   } 
+*/
+  for(int num_i=0; num_i<N_s; num_i++){
+    num_sum[num_i] = 0.0;
+  }
 
 	for(int t=0; t<t_max; t++){
+    printf("t=%d\n",t);
 
-    for(int num=0; num<N_s; num++){
+    for(int num=0; num<N_s-1; num++){
+      sarcomere[t][num] = x[num + 1] - x[num];
+      //printf("sarcomere=%15e\n",sarcomere[t][num]);
+      //printf("%15e\n",sarcomere[num]);
+      F_my[num] = Force_myosin(sarcomere[t][num]);
+    }
+  
+
+    sum = 0.0;
+    for(int i=0; i<N_s - 1; i++){
+      sum += sarcomere[t][i];
+    }
+    
+    //printf("sum=%15e\n",sum);
+    ave = sum/((double)N_s - 1.0);
+    //printf("ave=%15e\n",ave);
+
+    result = 0.0;
+    for(int i=0; i<N_s - 1; i++){
+      result += (sarcomere[t][i] - ave)*(sarcomere[t][i] - ave);
+    }
+    
+    var[t] = sqrt(result);
+
+    fprintf(fp0, "%d\t%15e\t%15e\t%15e\n" ,t,sarcomere[t][3],sarcomere[t][N_s/2],var[t]);
+    //printf("t=%d\tl_edge=%15e\tl_center=%15e\tver=%15e\n",t,sarcomere[t][3],sarcomere[t][N_s/2],var[t]);
+
+
+    for(int num_i=0; num_i<N_s - 1; num_i++){
+      num_sum[num_i] += sarcomere[t][num_i];
+    }
+
+    for(int num=0; num<N_s - 1; num++){
+
       F_all[num] = F_my[num];
       
       double value = Uniform();
       PP = Fluctuation_theorem(F_all[num]);
+
       if(value < 1 / (1 + PP)){
-        if(num != 0 and num != N_s - 1){
-          x[num] += x_0/2;
-          x[num + 1] -= x_0/2;
+        if(num != 0){
+          x[num] += 0.5*x_0;
+          x[num + 1] -= 0.5*x_0;
         }
       }
       else{
-        if(num != 0 and num != N_s - 1){
-          x[num] -= x_0/2;
-          x[num + 1] += x_0/2;
+        if(num != 0){
+          x[num] -= 0.5*x_0;
+          x[num + 1] +=0.5*x_0;
         }
       }
-
-      sarcomere[num] = x[num + 1] - x[num];
-      F_my[num] = Force_myosin(sarcomere[num]);
-
-
     }
-		
 
   }	
-	
+
+  for(int num=0; num<N_s - 1; num++){
+    num_result[num] = 0.0;
+  }
+  for(int num=0; num<N_s - 1; num++){
+    num_ave[num] = num_sum[num]/((double)N_s - 1.0);
+
+    for(int t_num=0; t_num<t_max; t_num++){
+     num_result[num] += (sarcomere[t_num][num] - num_ave[num])*(sarcomere[t_num][num] - num_ave[num]);
+    }
+  num_var[num] = sqrt(num_result[num]);
+  fprintf(fp1, "%d\t%15e\n",num,num_var[num]);
+  //printf("n=%d\tnum_var=%15e\n",num,num_var[num]);
+  }
+
+ 
+  
+
+	fclose(fp0);
+  fclose(fp1);
 	return 0;
 }
