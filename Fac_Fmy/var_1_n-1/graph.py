@@ -19,7 +19,7 @@ ax.axes.yaxis.set_ticks([])
 
 #plt.xlim([0,2e-6])
 plt.xlabel('l',fontsize=20)
-plt.ylabel('$F_{my}$',fontsize=20)
+plt.ylabel('$F_{ac}$',fontsize=20)
 
 ax.plot(x,y,color='black')
-fig.savefig("l_Fac.png",bbox_inches="tight")
+fig.savefig("new_l_Fac.png",bbox_inches="tight")
