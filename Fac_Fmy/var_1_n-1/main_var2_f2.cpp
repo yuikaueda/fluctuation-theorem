@@ -53,6 +53,8 @@ int main(void){
   double num_result[N_s];
   double num_ave[N_s];
   double num_var[N_s];
+  double F_sum[t_max];
+  double F_ave[t_max];
 
 	FILE* fp0;
 	fp0 = fopen("s_N100_Ae4_x0001e6_tmax10000.dat","w");
@@ -65,6 +67,12 @@ int main(void){
 	if(fp1==NULL){
 		printf("File open faild.");
 	}
+
+  FILE* fp2;
+  fp2 = fopen("t_F_N100_Ae4_x0001e6_tmax10000.dat","w");
+  if(fp2==NULL){
+    printf("File open faild");
+  }
 
   for(int ini=0; ini<N_s; ini++){
 	  x[ini] = ini*l_0;
@@ -84,6 +92,10 @@ int main(void){
 */
   for(int num_i=0; num_i<N_s; num_i++){
     num_sum[num_i] = 0.0;
+  }
+
+  for(int t_run=0; t_run<t_max; t_run++){
+    F_sum[t_run] = 0.0;
   }
 
 	for(int t=0; t<t_max; t++){
@@ -125,6 +137,7 @@ int main(void){
     for(int num=0; num<N_s - 1; num++){
 
       F_all[num] = F_my[num];
+      F_sum[t] += F_all[num]; 
       
       double value = Uniform();
       PP = Fluctuation_theorem(F_all[num]);
@@ -142,6 +155,9 @@ int main(void){
         }
       }
     }
+
+    F_ave[t] = F_sum[t]/(N_s - 1);
+    fprintf(fp2, "%d\t%15e\t%15e\t%15e\n",t,F_all[4],F_all[N_s/2],F_ave[t]);
 
   }	
 
@@ -165,5 +181,6 @@ int main(void){
 
 	fclose(fp0);
   fclose(fp1);
+  fclose(fp2);
 	return 0;
 }
