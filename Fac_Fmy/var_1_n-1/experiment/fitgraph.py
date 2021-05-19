@@ -4,37 +4,37 @@ import matplotlib.pyplot as plt
 import math
 
 df = np.loadtxt('sarcomerelength.dat')
-df1 = df.round(1) - 1.12
-num = 18
+df1 = df.round(2) - 1.12
+num = 20
 
-a, b, _ = plt.hist(df1, bins=num, range=(-0.9,2.6), density=True)
+a, b, _ = plt.hist(df1, bins=num, density=True)
 plt.close()
 #print(a)
 aa = []
 bb = []
 
 step0=0
-for i in range(0, 3):
-    if not a[i] == 0 and not a[i+8-step0] == 0:
-        a_hi = math.log(a[i]/a[i+8-step0])
+for i in range(0, 5):
+    if not a[i] == 0 and not a[-i] == 0:
+        a_hi = math.log(a[i]/a[i+12-step0])
         aa.append(a_hi)
+        step0 += 2
         bb.append(b[i])
-    step0+=2
         #print(aa)
         #p = math.log(aa)
 
-a_hi = 0
+a_hi = math.log(a[6]/a[6])
 aa.append(a_hi)
-bb.append(b[4])
+bb.append(b[6])
 
-step=2
-for i in range(5, 8):
-    if not a[i] == 0 and not a[i-step] == 0: 
+step=1
+for i in range(7, 13):
+    if not a[i] == 0 and not a[i-step] == 0:
         a_hi = math.log(a[i]/a[i-step])
         aa.append(a_hi)
         bb.append(b[i])
         #print(aa)
-    step+=2
+        step+=2
 
 print(aa)
 #fig = plt.figure()
@@ -52,5 +52,5 @@ fig, ax = plt.subplots(1, 1)
 ax.plot(bb, aa, 'o', c='black')
 plt.xlabel(r"$sarcomere\ length[\mu m]$", fontsize = 18)
 plt.ylabel(r"$ln[P( \Delta x) / P(- \Delta x)]$", fontsize = 18)
-fig.savefig("range_ln_st02_round1_fig_lnp_bins18")
-plt.show()
+fig.savefig("ln_st02_round2_fig_lnp_bins30")
+#plt.show()
