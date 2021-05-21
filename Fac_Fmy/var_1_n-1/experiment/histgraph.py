@@ -3,14 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 df = np.loadtxt('sarcomerelength.dat')
-df1 = df.round(1) - 1.12
+df1 = df.round(2)
 
 
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
-ret = ax.hist(df1, bins=34, density=True, range=(-0.75,2.65), histtype='barstacked', ec='black')
+ret = ax.hist(df1, bins=17, density=True, range=(0.35,3.75), histtype='barstacked', ec='black')
 #ret1 = list(ret)
 #ret1[0] = ret1[0]/491
 print(ret[1])
@@ -20,5 +20,5 @@ print(ret[1])
 
 plt.xlabel(r"$sarcomere\ length[\mu m]$", fontsize = 18)
 plt.ylabel(r"$PDF$", fontsize = 18)
-fig.savefig("hist_strain02_round1_weigh01")
+fig.savefig("hist_round1_bin18")
 plt.show()
