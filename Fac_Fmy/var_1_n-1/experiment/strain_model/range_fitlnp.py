@@ -78,15 +78,15 @@ for num in range(50, 100):
     pp.append(pp_i)
     step+=1
 
-x_1 = np.linspace(-0.8,0.8,10)
-x_2 = np.linspace(0.1,0.2,10)
+x_1 = np.linspace(x_new[75],x_new[99],26)
+#x_2 = np.linspace(0.1,0.2,10)
 
 K=1.38e-23
 T=309.5
 def fit(x,F,a):
     return F*x/(K*T)+a
 
-param_1, cov_1 = curve_fit(fit, x_new, pp)
+param_1, cov_1 = curve_fit(fit, x_1, pp)
 print(param_1)
 
 #param_2, cov_2 = curve_fit(fit, x_2, pp)

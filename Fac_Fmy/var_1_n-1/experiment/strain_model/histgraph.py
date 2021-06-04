@@ -28,7 +28,7 @@ for i in range(2, 10):
 
 fig, ax = plt.subplots(1, 1)
 ax.bar(bb, aa, width=0.025, edgecolor="#000000")
-plt.xlabel(r"$sarcomere\ length[\mu m]$", fontsize = 18)
+plt.xlabel(r"$\varepsilon$", fontsize = 18)
 plt.ylabel(r"$PDF$", fontsize = 18)
 fig.savefig("strainhist_round2_bin10")
 plt.show()
