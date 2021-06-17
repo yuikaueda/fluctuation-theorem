@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 x = np.linspace(0, 2.8e-6, 1000)
-y = 1.0e-6*(x - 1.4e-6)
+y = -1.0e-6*(x - 1.4e-6)*(x - 1.4e-6)
 
 fig, ax = plt.subplots(1, 1)
 
@@ -18,8 +18,8 @@ ax.axes.yaxis.set_ticks([])
 #ax.set_xticklabels(['$l_0$'], fontsize=18)
 
 #plt.xlim([0,2e-6])
-plt.xlabel('l',fontsize=20)
-plt.ylabel('$F_{ac}$',fontsize=20)
+plt.xlabel('Sarcomere length',fontsize=20)
+plt.ylabel('$Tension$',fontsize=20)
 
 ax.plot(x,y,color='black')
-fig.savefig("new_l_Fac.png",bbox_inches="tight")
+fig.savefig("tension_force.png",bbox_inches="tight")
