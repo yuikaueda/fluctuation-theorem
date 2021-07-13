@@ -6,7 +6,7 @@ import math
 df = np.loadtxt('sarcomerelength.dat')
 df1 = df.round(2)
 
-fig = plt.figure()
+fig = plt.figure(figsize=(10, 8))
 ax = fig.add_subplot(1, 1, 1)
 
 ret = ax.hist(df1, bins=10, density=True, range=(0.35,3.75), histtype='barstacked', ec='black')
@@ -30,7 +30,7 @@ for i in range(2, 10):
     step += 1
 '''
 #ax.bar(b, a, width=0.025, edgecolor="#000000")
-plt.xlabel(r"$Sarcomere\ length\ [\mu m]$", fontsize = 18)
+plt.xlabel(r"Sarcomere length $[\mu m]$", fontsize = 18)
 plt.ylabel(r"$PDF$", fontsize = 18)
-fig.savefig("oomozi_strainhist_round2_bin10")
+fig.savefig("new_oomozi_strainhist_round2_bin10")
 plt.show()
